@@ -18,6 +18,8 @@ using OfficeOpenXml;
 using FsTitle = LibHac.Title;
 using Title = NX_Game_Info.Common.Title;
 using ArrayOfTitle = NX_Game_Info.Common.ArrayOfTitle;
+using TaskDialogPage = KPreisser.UI.TaskDialogPage;
+using TaskDialog = KPreisser.UI.TaskDialog;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
