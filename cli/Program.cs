@@ -8,21 +8,22 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using LibHac;
-using Mono.Options;
 using OfficeOpenXml;
 using Newtonsoft.Json;
 using FsTitle = LibHac.Title;
 using Title = NX_Game_Info.Common.Title;
+using System.CommandLine;
 
 namespace NX_Game_Info
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
 
             FileVersionInfo info = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+
             if (info != null)
             {
                 Console.WriteLine("{0} {1}", info.ProductName, info.ProductVersion);
@@ -34,39 +35,44 @@ namespace NX_Game_Info
             }
 
             Console.WriteLine();
-
-            bool sdcard = false;
-            string sort = "";
-            string export = "";
-
-            OptionSet options = null;
-            options = new OptionSet()
+            var pathsArgument = new Argument<List<string>>(
+                "paths",
+                "paths to files or directories");
+            var sdcardOption = new Option<bool>(
+                ["-c", "--sdcard"],
+                "open path as sdcard");
+            var sortOption = new Option<string>(
+                ["-s", "--sort"],
+                () => "filename",
+                "sort by titleid, titlename or filename")
+                .FromAmong("titleid", "titlename", "filename");
+            var exportOption = new Option<string>(
+                ["-x", "--export"],
+                "export filename, only *.csv, *.json or *.xlsx supported")
             {
-                { "c|sdcard", "open path as sdcard", v => sdcard = v != null },
-                { "s|sort=", "sort by titleid, titlename or filename [default: filename]", (string s) => sort = s },
-                { "x|export=", "export filename, only *.csv, *.json or *.xlsx supported", (string s) => export = s },
-                { "l|delimiter=", "csv delimiter character [default: ,]", (char c) => Common.Settings.Default.CsvSeparator = c },
-                { "h|help", "show this help message and exit", v => printHelp(options) },
-                { "z|nsz", "enable nsz extension", v => Common.Settings.Default.NszExtension = v != null, true },
-                { "d|debug", "enable debug log", v => Common.Settings.Default.DebugLog = v != null },
+                ArgumentHelpName = "filename.json|filename.csv|filename.xlsx",
             };
+            var delimiterOption = new Option<char>(
+                ["-l", "--delimiter"],
+                () => Common.Settings.Default.CsvSeparator,
+                "csv delimiter character");
+            var nszOption = new Option<bool>(
+                ["-z", "--nsz"],
+                "enable nsz extension");
+            var debugOption = new Option<bool>(
+                ["-d", "--debug"],
+                "enable debug log");
 
-            List<string> paths;
-            try
+            var rootCommand = new RootCommand(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyDescriptionAttribute>().Description)
             {
-                paths = options.Parse(args);
-            }
-            catch (OptionException)
-            {
-                printHelp(options);
-                return;
-            }
-
-            if (!paths.Any())
-            {
-                printHelp(options);
-                return;
-            }
+                pathsArgument,
+                sdcardOption,
+                sortOption,
+                exportOption,
+                delimiterOption,
+                nszOption,
+                debugOption,
+            };
 
             bool init = Process.initialize(out List<string> messages);
 
@@ -82,15 +88,15 @@ namespace NX_Game_Info
                 Environment.Exit(-1);
             }
 
-            processPaths(paths, sort, export, sdcard);
-        }
+            rootCommand.SetHandler((paths, sort, export, sdcard, delimiter, nsz, debug) =>
+            {
+                Common.Settings.Default.CsvSeparator = delimiter;
+                Common.Settings.Default.NszExtension = nsz;
+                Common.Settings.Default.DebugLog = debug;
+                processPaths(paths, sort, export, sdcard);
+            }, pathsArgument, sortOption, exportOption, sdcardOption, delimiterOption, nszOption, debugOption);
 
-        static void printHelp(OptionSet options)
-        {
-            Console.Error.WriteLine("usage: {0} [-h|--help] [-d|--debug] [-c|--sdcard] [-s(titleid|titlename|filename)|--sort=(titleid|titlename|filename)] [-x(<filename.csv>|<filename.xlsx>)|--export=(<filename.csv>|<filename.xlsx>)] [-l(<delimiter>)|--delimiter=(<delimiter>)] paths...\n", Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location).Quote());
-            options.WriteOptionDescriptions(Console.Error);
-
-            Environment.Exit(-1);
+            return await rootCommand.InvokeAsync(args);
         }
 
         static void processPaths(List<string> paths, string sort, string export, bool sdcard)
@@ -194,7 +200,11 @@ namespace NX_Game_Info
             Process.log?.WriteLine("\n{0} titles processed", titles.Count);
             Console.Error.WriteLine("\n{0} titles processed", titles.Count);
 
-            exportTitles(titles, export);
+
+            if (!string.IsNullOrEmpty(export))
+            {
+                exportTitles(titles, export);
+            }
         }
 
         static Title openFile(string filename)
