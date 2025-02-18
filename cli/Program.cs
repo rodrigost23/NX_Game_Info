@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using LibHac;
 using Mono.Options;
 using OfficeOpenXml;
+using Newtonsoft.Json;
 using FsTitle = LibHac.Title;
 using Title = NX_Game_Info.Common.Title;
 
@@ -43,7 +44,7 @@ namespace NX_Game_Info
             {
                 { "c|sdcard", "open path as sdcard", v => sdcard = v != null },
                 { "s|sort=", "sort by titleid, titlename or filename [default: filename]", (string s) => sort = s },
-                { "x|export=", "export filename, only *.csv or *.xlsx supported", (string s) => export = s },
+                { "x|export=", "export filename, only *.csv, *.json or *.xlsx supported", (string s) => export = s },
                 { "l|delimiter=", "csv delimiter character [default: ,]", (char c) => Common.Settings.Default.CsvSeparator = c },
                 { "h|help", "show this help message and exit", v => printHelp(options) },
                 { "z|nsz", "enable nsz extension", v => Common.Settings.Default.NszExtension = v != null, true },
@@ -467,6 +468,23 @@ namespace NX_Game_Info
                     Process.log?.WriteLine("\n{0} of {1} titles exported to {2}", index, titles.Count, filename);
                     Console.Error.WriteLine("\n{0} of {1} titles exported to {2}", index, titles.Count, filename);
                 }
+            }
+            else if (filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                }
+                catch
+                {
+                    Console.Error.WriteLine("\n{0} is not supported or not a valid path", filename);
+                }
+
+                var json = JsonConvert.SerializeObject(titles, Formatting.Indented);
+                File.WriteAllText(filename, json);
+
+                Process.log?.WriteLine("\n{0} titles exported to {1}", titles.Count, filename);
+                Console.Error.WriteLine("\n{0} titles exported to {1}", titles.Count, filename);
             }
             else
             {

@@ -15,6 +15,7 @@ using System.Xml.Serialization;
 using Foundation;
 #endif
 using LibHac;
+using Newtonsoft.Json;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
@@ -330,22 +331,41 @@ namespace NX_Game_Info
 
             public Title() { }
 
+            [JsonProperty("TitleID")]
             [XmlElement("TitleID")]
             public string titleID { get; set; } = "";
+
+            [JsonProperty("BaseTitleID")]
             [XmlElement("BaseTitleID")]
             public string baseTitleID { get; set; } = "";
+
+            [JsonProperty("TitleName")]
             [XmlElement("TitleName")]
             public string titleName { get; set; } = "";
+
+            [JsonProperty("DisplayVersion")]
             [XmlElement("DisplayVersion")]
             public string displayVersion { get; set; } = "";
+
+            [JsonProperty("Version")]
             [XmlElement("Version")]
             public uint version { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string versionString { get { return version != unchecked((uint)-1) ? version.ToString() + (version >= 65536 ? " (" + (version / 65536).ToString() + ")" : "") : ""; } }
+
+            [JsonProperty("LatestVersion")]
             [XmlElement("LatestVersion")]
             public uint latestVersion { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string latestVersionString { get { return latestVersion != unchecked((uint)-1) ? latestVersion.ToString() + (latestVersion >= 65536 ? " (" + (latestVersion / 65536).ToString() + ")" : "") : ""; } }
+
+            [JsonProperty("SystemUpdate")]
             [XmlElement("SystemUpdate")]
             public uint systemUpdate { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string systemUpdateString
             {
                 get
@@ -384,8 +404,12 @@ namespace NX_Game_Info
                     }
                 }
             }
+
+            [JsonProperty("SystemVersion")]
             [XmlElement("SystemVersion")]
             public uint systemVersion { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string systemVersionString
             {
                 get
@@ -424,11 +448,19 @@ namespace NX_Game_Info
                     }
                 }
             }
+
+            [JsonProperty("ApplicationVersion")]
             [XmlElement("ApplicationVersion")]
             public uint applicationVersion { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string applicationVersionString { get { return applicationVersion != unchecked((uint)-1) ? applicationVersion.ToString() : ""; } }
+
+            [JsonProperty("Masterkey")]
             [XmlElement("Masterkey")]
             public uint masterkey { get; set; } = unchecked((uint)-1);
+
+            [JsonIgnore]
             public string masterkeyString
             {
                 get
@@ -464,12 +496,20 @@ namespace NX_Game_Info
                     }
                 }
             }
+
+            [JsonProperty("TitleKey")]
             [XmlElement("TitleKey")]
             public string titleKey { get; set; } = "";
+
+            [JsonProperty("Publisher")]
             [XmlElement("Publisher")]
             public string publisher { get; set; } = "";
+
+            [JsonProperty("Languages")]
             [XmlElement("Languages")]
             public HashSet<string> languages { get; set; } = new HashSet<string>();
+
+            [JsonIgnore]
             public string languagesString
             {
                 get
@@ -477,10 +517,16 @@ namespace NX_Game_Info
                     return String.Join(",", languages.Select(x => x).Where(x => !String.IsNullOrEmpty(x)).ToArray());
                 }
             }
+
+            [JsonProperty("Filename")]
             [XmlElement("Filename")]
             public string filename { get; set; } = "";
+
+            [JsonProperty("Filesize")]
             [XmlElement("Filesize")]
             public long filesize { get; set; } = 0;
+
+            [JsonIgnore]
             public string filesizeString
             {
                 get
@@ -494,8 +540,12 @@ namespace NX_Game_Info
 #endif
                 }
             }
+
+            [JsonProperty("Type")]
             [XmlElement("Type")]
             public TitleType type { get; set; } = TitleType.Application;
+
+            [JsonIgnore]
             public string typeString
             {
                 get
@@ -513,10 +563,16 @@ namespace NX_Game_Info
                     }
                 }
             }
+
+            [JsonProperty("Distribution")]
             [XmlElement("Distribution")]
             public Distribution distribution { get; set; } = Distribution.Invalid;
+
+            [JsonProperty("Structure")]
             [XmlElement("Structure")]
             public HashSet<Structure> structure { get; set; } = new HashSet<Structure>();
+
+            [JsonIgnore]
             public string structureString
             {
                 get
@@ -568,12 +624,22 @@ namespace NX_Game_Info
                     return "";
                 }
             }
+
+            [JsonProperty("Signature")]
             [XmlElement("Signature")]
             public bool? signature { get; set; } = null;
+
+            [JsonIgnore]
             public string signatureString { get { return signature == null ? "" : (bool)signature ? "Passed" : "Not Passed"; } }
+
+            [JsonProperty("Permission")]
             [XmlElement("Permission")]
             public Permission permission { get; set; } = Permission.Invalid;
+
+            [JsonIgnore]
             public string permissionString { get { return permission == Permission.Invalid ? "" : permission.ToString(); } }
+
+            [JsonProperty("Error")]
             [XmlElement("Error")]
             public string error { get; set; } = "";
         }
