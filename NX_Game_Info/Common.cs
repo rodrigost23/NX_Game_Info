@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Configuration;
 #if WINDOWS
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Text;
 #endif
 #if MACOS
 using System.IO;
 #endif
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml.Serialization;
 #if MACOS
 using Foundation;
@@ -212,7 +212,7 @@ namespace NX_Game_Info
         [Serializable]
         public class Title
         {
-            public static Dictionary<string, uint> SystemUpdate = new Dictionary<string, uint>
+            public static readonly Dictionary<string, uint> SystemUpdate = new()
             {
                 { "4f8133e5b3657334e507c8e704011886.cnmt.nca", 450 },       // 1.0.0
                 { "734d85b19c5f281e100407d84e8cbfb2.cnmt.nca", 65796 },     // 2.0.0
@@ -249,8 +249,8 @@ namespace NX_Game_Info
                 { "7746448930b5db17c75227dd4a9b2f20.cnmt.nca", 673185852 }, // 10.2.0
             };
 
-            public static string[] Properties = new string[]
-            {
+            public static readonly string[] Properties =
+            [
                 "Title ID",
                 "Base Title ID",
                 "Title Name",
@@ -272,10 +272,10 @@ namespace NX_Game_Info
                 "Signature",
                 "Permission",
                 "Error",
-            };
+            ];
 
-            public static string[] LanguageCode = new string[]
-            {
+            public static readonly string[] LanguageCode =
+            [
                 "en-US",
                 "en-GB",
                 "ja",
@@ -291,7 +291,7 @@ namespace NX_Game_Info
                 "ko",
                 "zh-TW",
                 "zh-CN",
-            };
+            ];
 
             public enum Distribution
             {
@@ -352,150 +352,80 @@ namespace NX_Game_Info
             public uint version { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string versionString { get { return version != unchecked((uint)-1) ? version.ToString() + (version >= 65536 ? " (" + (version / 65536).ToString() + ")" : "") : ""; } }
+            public string versionString => version != unchecked((uint)-1) ? version.ToString() + (version >= 65536 ? " (" + (version / 65536).ToString() + ")" : "") : "";
+
 
             [JsonProperty("LatestVersion")]
             [XmlElement("LatestVersion")]
             public uint latestVersion { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string latestVersionString { get { return latestVersion != unchecked((uint)-1) ? latestVersion.ToString() + (latestVersion >= 65536 ? " (" + (latestVersion / 65536).ToString() + ")" : "") : ""; } }
+            public string latestVersionString => latestVersion != unchecked((uint)-1) ? latestVersion.ToString() + (latestVersion >= 65536 ? " (" + (latestVersion / 65536).ToString() + ")" : "") : "";
+
 
             [JsonProperty("SystemUpdate")]
             [XmlElement("SystemUpdate")]
             public uint systemUpdate { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string systemUpdateString
+            public string systemUpdateString => systemUpdate switch
             {
-                get
-                {
-                    if (systemUpdate == 0)
-                    {
-                        return "0";
-                    }
-                    else if (systemUpdate <= 450)
-                    {
-                        return "1.0.0";
-                    }
-                    else if (systemUpdate <= 65796)
-                    {
-                        return "2.0.0";
-                    }
-                    else if (systemUpdate <= 131162)
-                    {
-                        return "2.1.0";
-                    }
-                    else if (systemUpdate <= 196628)
-                    {
-                        return "2.2.0";
-                    }
-                    else if (systemUpdate <= 262164)
-                    {
-                        return "2.3.0";
-                    }
-                    else if (systemUpdate == unchecked((uint)-1))
-                    {
-                        return "";
-                    }
-                    else
-                    {
-                        return ((systemUpdate >> 26) & 0x3F) + "." + ((systemUpdate >> 20) & 0x3F) + "." + ((systemUpdate >> 16) & 0x0F);
-                    }
-                }
-            }
+                0 => "0",
+                <= 450 => "1.0.0",
+                <= 65796 => "2.0.0",
+                <= 131162 => "2.1.0",
+                <= 196628 => "2.2.0",
+                <= 262164 => "2.3.0",
+                unchecked((uint)-1) => "",
+                _ => (systemUpdate >> 26 & 0x3F) + "." + (systemUpdate >> 20 & 0x3F) + "." + (systemUpdate >> 16 & 0x0F)
+            };
 
             [JsonProperty("SystemVersion")]
             [XmlElement("SystemVersion")]
             public uint systemVersion { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string systemVersionString
+            public string systemVersionString => systemVersion switch
             {
-                get
-                {
-                    if (systemVersion == 0)
-                    {
-                        return "0";
-                    }
-                    else if (systemVersion <= 450)
-                    {
-                        return "1.0.0";
-                    }
-                    else if (systemVersion <= 65796)
-                    {
-                        return "2.0.0";
-                    }
-                    else if (systemVersion <= 131162)
-                    {
-                        return "2.1.0";
-                    }
-                    else if (systemVersion <= 196628)
-                    {
-                        return "2.2.0";
-                    }
-                    else if (systemVersion <= 262164)
-                    {
-                        return "2.3.0";
-                    }
-                    else if (systemVersion == unchecked((uint)-1))
-                    {
-                        return "";
-                    }
-                    else
-                    {
-                        return ((systemVersion >> 26) & 0x3F) + "." + ((systemVersion >> 20) & 0x3F) + "." + ((systemVersion >> 16) & 0x0F);
-                    }
-                }
-            }
+                0 => "0",
+                <= 450 => "1.0.0",
+                <= 65796 => "2.0.0",
+                <= 131162 => "2.1.0",
+                <= 196628 => "2.2.0",
+                <= 262164 => "2.3.0",
+                unchecked((uint)-1) => "",
+                _ => ((systemVersion >> 26) & 0x3F) + "." + ((systemVersion >> 20) & 0x3F) + "." + ((systemVersion >> 16) & 0x0F)
+            };
 
             [JsonProperty("ApplicationVersion")]
             [XmlElement("ApplicationVersion")]
             public uint applicationVersion { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string applicationVersionString { get { return applicationVersion != unchecked((uint)-1) ? applicationVersion.ToString() : ""; } }
+            public string applicationVersionString => applicationVersion != unchecked((uint)-1) ? applicationVersion.ToString() : "";
+
 
             [JsonProperty("Masterkey")]
             [XmlElement("Masterkey")]
             public uint masterkey { get; set; } = unchecked((uint)-1);
 
             [JsonIgnore]
-            public string masterkeyString
+            public string masterkeyString => masterkey switch
             {
-                get
-                {
-                    switch (masterkey)
-                    {
-                        case 0:
-                            return masterkey.ToString() + " (1.0.0-2.3.0)";
-                        case 1:
-                            return masterkey.ToString() + " (3.0.0)";
-                        case 2:
-                            return masterkey.ToString() + " (3.0.1-3.0.2)";
-                        case 3:
-                            return masterkey.ToString() + " (4.0.0-4.1.0)";
-                        case 4:
-                            return masterkey.ToString() + " (5.0.0-5.1.0)";
-                        case 5:
-                            return masterkey.ToString() + " (6.0.0-6.1.0)";
-                        case 6:
-                            return masterkey.ToString() + " (6.2.0)";
-                        case 7:
-                            return masterkey.ToString() + " (7.0.0-8.0.1)";
-                        case 8:
-                            return masterkey.ToString() + " (8.1.0)";
-                        case 9:
-                            return masterkey.ToString() + " (9.0.0-9.0.1)";
-                        case 10:
-                            return masterkey.ToString() + " (9.1.0-10.2.0)";
-                        case unchecked((uint)-1):
-                            return "";
-                        default:
-                            return masterkey.ToString();
-                    }
-                }
-            }
+                0 => masterkey.ToString() + " (1.0.0-2.3.0)",
+                1 => masterkey.ToString() + " (3.0.0)",
+                2 => masterkey.ToString() + " (3.0.1-3.0.2)",
+                3 => masterkey.ToString() + " (4.0.0-4.1.0)",
+                4 => masterkey.ToString() + " (5.0.0-5.1.0)",
+                5 => masterkey.ToString() + " (6.0.0-6.1.0)",
+                6 => masterkey.ToString() + " (6.2.0)",
+                7 => masterkey.ToString() + " (7.0.0-8.0.1)",
+                8 => masterkey.ToString() + " (8.1.0)",
+                9 => masterkey.ToString() + " (9.0.0-9.0.1)",
+                10 => masterkey.ToString() + " (9.1.0-10.2.0)",
+                unchecked((uint)-1) => "",
+                _ => masterkey.ToString(),
+            };
 
             [JsonProperty("TitleKey")]
             [XmlElement("TitleKey")]
@@ -510,13 +440,8 @@ namespace NX_Game_Info
             public HashSet<string> languages { get; set; } = new HashSet<string>();
 
             [JsonIgnore]
-            public string languagesString
-            {
-                get
-                {
-                    return String.Join(",", languages.Select(x => x).Where(x => !String.IsNullOrEmpty(x)).ToArray());
-                }
-            }
+            public string languagesString =>
+                string.Join(",", languages.Where(x => !string.IsNullOrEmpty(x)));
 
             [JsonProperty("Filename")]
             [XmlElement("Filename")]
@@ -546,23 +471,13 @@ namespace NX_Game_Info
             public TitleType type { get; set; } = TitleType.Application;
 
             [JsonIgnore]
-            public string typeString
+            public string typeString => type switch
             {
-                get
-                {
-                    switch (type)
-                    {
-                        case TitleType.Application:
-                            return "Base";
-                        case TitleType.Patch:
-                            return "Update";
-                        case TitleType.AddOnContent:
-                            return "DLC";
-                        default:
-                            return "";
-                    }
-                }
-            }
+                TitleType.Application => "Base",
+                TitleType.Patch => "Update",
+                TitleType.AddOnContent => "DLC",
+                _ => "",
+            };
 
             [JsonProperty("Distribution")]
             [XmlElement("Distribution")]
@@ -573,71 +488,42 @@ namespace NX_Game_Info
             public HashSet<Structure> structure { get; set; } = new HashSet<Structure>();
 
             [JsonIgnore]
-            public string structureString
+            public string structureString => distribution switch
             {
-                get
+                Distribution.Cartridge => structure switch
                 {
-                    if (distribution == Distribution.Cartridge)
-                    {
-                        if (new HashSet<Structure>(new[] { Structure.UpdatePartition, Structure.SecurePartition }).All(value => structure.Contains(value)) &&
-                            new HashSet<Structure>(new[] { Structure.RootPartition, Structure.NormalPartition }).Any(value => structure.Contains(value)))
-                        {
-                            return "Scene";
-                        }
-                        else if (new HashSet<Structure>(new[] { Structure.SecurePartition }).All(value => structure.Contains(value)))
-                        {
-                            return "Converted";
-                        }
-                        else
-                        {
-                            return "Not complete";
-                        }
-                    }
-                    else if (distribution == Distribution.Digital)
-                    {
-                        if (new HashSet<Structure>(new[] { Structure.LegalinfoXml, Structure.NacpXml, Structure.PrograminfoXml, Structure.CardspecXml }).All(value => structure.Contains(value)))
-                        {
-                            return "Scene";
-                        }
-                        else if (new HashSet<Structure>(new[] { Structure.AuthoringtoolinfoXml }).All(value => structure.Contains(value)))
-                        {
-                            return "Homebrew";
-                        }
-                        else if (new HashSet<Structure>(new[] { Structure.Cert, Structure.Tik }).All(value => structure.Contains(value)))
-                        {
-                            return "CDN";
-                        }
-                        else if (new HashSet<Structure>(new[] { Structure.CnmtXml }).All(value => structure.Contains(value)))
-                        {
-                            return "Converted";
-                        }
-                        else
-                        {
-                            return "Not complete";
-                        }
-                    }
-                    else if (distribution == Distribution.Filesystem)
-                    {
-                        return "Filesystem";
-                    }
-
-                    return "";
-                }
-            }
+                    var s when new HashSet<Structure>([Structure.UpdatePartition, Structure.SecurePartition]).All(s.Contains) &&
+                               new HashSet<Structure>([Structure.RootPartition, Structure.NormalPartition]).Any(s.Contains) => "Scene",
+                    var s when new HashSet<Structure>([Structure.SecurePartition]).All(s.Contains) => "Converted",
+                    _ => "Not complete"
+                },
+                Distribution.Digital => structure switch
+                {
+                    var s when new HashSet<Structure>([Structure.LegalinfoXml, Structure.NacpXml, Structure.PrograminfoXml, Structure.CardspecXml]).All(s.Contains) => "Scene",
+                    var s when new HashSet<Structure>([Structure.AuthoringtoolinfoXml]).All(s.Contains) => "Homebrew",
+                    var s when new HashSet<Structure>([Structure.Cert, Structure.Tik]).All(s.Contains) => "CDN",
+                    var s when new HashSet<Structure>([Structure.CnmtXml]).All(s.Contains) => "Converted",
+                    _ => "Not complete"
+                },
+                Distribution.Filesystem => "Filesystem",
+                _ => ""
+            };
 
             [JsonProperty("Signature")]
             [XmlElement("Signature")]
             public bool? signature { get; set; } = null;
 
             [JsonIgnore]
-            public string signatureString { get { return signature == null ? "" : (bool)signature ? "Passed" : "Not Passed"; } }
+            public string signatureString => signature == null ? "" : (bool)signature ? "Passed" : "Not Passed";
+
 
             [JsonProperty("Permission")]
             [XmlElement("Permission")]
             public Permission permission { get; set; } = Permission.Invalid;
 
             [JsonIgnore]
-            public string permissionString { get { return permission == Permission.Invalid ? "" : permission.ToString(); } }
+            public string permissionString => permission == Permission.Invalid ? "" : permission.ToString();
+
 
             [JsonProperty("Error")]
             [XmlElement("Error")]
@@ -664,44 +550,18 @@ namespace NX_Game_Info
             // Get absolute value
             long absolute_i = (i < 0 ? -i : i);
             // Determine the suffix and readable value
-            string suffix;
-            double readable;
-            if (absolute_i >= 0x1000000000000000) // Exabyte
+            (double readable, string suffix) = absolute_i switch
             {
-                suffix = "EB";
-                readable = (i >> 50);
-            }
-            else if (absolute_i >= 0x4000000000000) // Petabyte
-            {
-                suffix = "PB";
-                readable = (i >> 40);
-            }
-            else if (absolute_i >= 0x10000000000) // Terabyte
-            {
-                suffix = "TB";
-                readable = (i >> 30);
-            }
-            else if (absolute_i >= 0x40000000) // Gigabyte
-            {
-                suffix = "GB";
-                readable = (i >> 20);
-            }
-            else if (absolute_i >= 0x100000) // Megabyte
-            {
-                suffix = "MB";
-                readable = (i >> 10);
-            }
-            else if (absolute_i >= 0x400) // Kilobyte
-            {
-                suffix = "KB";
-                readable = i;
-            }
-            else
-            {
-                return i.ToString("0 B"); // Byte
-            }
+                >= 0x1000000000000000 => (i >> 50, "EB"),
+                >= 0x4000000000000 => (i >> 40, "PB"),
+                >= 0x10000000000 => (i >> 30, "TB"),
+                >= 0x40000000 => (i >> 20, "GB"),
+                >= 0x100000 => (i >> 10, "MB"),
+                >= 0x400 => (i, "KB"),
+                _ => (i << 10, "B")
+            };
             // Divide by 1024 to get fractional value
-            readable = (readable / 1024);
+            readable /= 1024;
             // Return formatted number with suffix
             return readable.ToString("0.## ") + suffix;
         }
