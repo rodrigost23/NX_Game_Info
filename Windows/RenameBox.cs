@@ -8,7 +8,7 @@ using System.IO;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
-namespace NX_Game_Info
+namespace NX_Game_Info.Windows
 {
     partial class RenameBox : Form
     {
@@ -18,10 +18,10 @@ namespace NX_Game_Info
         public RenameBox()
         {
             InitializeComponent();
-            richTextBoxDefault.Text = Common.Settings.Default.Properties["RenameFormat"].DefaultValue.ToString();
+            richTextBoxDefault.Text = Settings.Default.Properties["RenameFormat"].DefaultValue.ToString();
             richTextApplyColor(richTextBoxDefault, false);
             textBoxCustomize.SelectionBackColor = Color.Aqua;
-            textBoxCustomize.SelectedText = Common.Settings.Default.RenameFormat;
+            textBoxCustomize.SelectedText = Settings.Default.RenameFormat;
             textBoxCustomize.Select(textBoxCustomize.Text.Length, 0);
         }
 
@@ -116,7 +116,7 @@ namespace NX_Game_Info
         private void labelDefault_Click(object sender, EventArgs e)
         {
             labelDefault.Focus();
-            textBoxCustomize.Text = Common.Settings.Default.Properties["RenameFormat"].DefaultValue.ToString();
+            textBoxCustomize.Text = Settings.Default.Properties["RenameFormat"].DefaultValue.ToString();
             textBoxCustomize.Select(textBoxCustomize.Text.Length, 0);
         }
 
@@ -163,8 +163,8 @@ namespace NX_Game_Info
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            Common.Settings.Default.RenameFormat = textBoxCustomize.Text;
-            Common.Settings.Default.Save();
+            Settings.Default.RenameFormat = textBoxCustomize.Text;
+            Settings.Default.Save();
             Close();
         }
     }

@@ -21,13 +21,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\NX_Game_Info\Common.cs" />
-    <Compile Include="..\NX_Game_Info\Common.Settings.cs" />
-    <Compile Include="..\NX_Game_Info\Common.Title.cs" />
-    <Compile Include="..\NX_Game_Info\Constants.cs" />
-    <Compile Include="..\NX_Game_Info\Process.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\NX_Game_Info\NX_Game_Info.csproj" />
     <ProjectReference Include="..\LibHac\src\LibHac\LibHac.csproj" />
     <ProjectReference Include="..\TaskDialog\TaskDialog\TaskDialog.csproj" />
   </ItemGroup>

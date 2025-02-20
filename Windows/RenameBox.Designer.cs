@@ -1,4 +1,4 @@
-﻿namespace NX_Game_Info
+﻿namespace NX_Game_Info.Windows
 {
     partial class RenameBox
     {

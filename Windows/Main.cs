@@ -23,7 +23,7 @@ using TaskDialog = KPreisser.UI.TaskDialog;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
-namespace NX_Game_Info
+namespace NX_Game_Info.Windows
 {
     public partial class Main : Form
     {
@@ -95,13 +95,13 @@ namespace NX_Game_Info
 
             PortableSettingsProvider.SettingsFileName = Constants.USER_SETTINGS;
             PortableSettingsProviderBase.SettingsDirectory = Process.path_prefix;
-            PortableSettingsProvider.ApplyProvider(Common.Settings.Default, Common.History.Default, Common.RecentDirectories.Default);
+            PortableSettingsProvider.ApplyProvider(Settings.Default, Common.History.Default, Common.RecentDirectories.Default);
 
-            Common.Settings.Default.Upgrade();
+            Settings.Default.Upgrade();
             Common.History.Default.Upgrade();
             Common.RecentDirectories.Default.Upgrade();
 
-            debugLogToolStripMenuItem.Checked = Common.Settings.Default.DebugLog;
+            debugLogToolStripMenuItem.Checked = Settings.Default.DebugLog;
 
             aboutToolStripMenuItem.Text = String.Format("&About {0}", Application.ProductName);
 
@@ -175,47 +175,47 @@ namespace NX_Game_Info
         {
             if (WindowState == FormWindowState.Normal)
             {
-                Common.Settings.Default.WindowLocation = Location;
-                Common.Settings.Default.WindowSize = Size;
+                Settings.Default.WindowLocation = Location;
+                Settings.Default.WindowSize = Size;
             }
             else
             {
-                Common.Settings.Default.WindowLocation = RestoreBounds.Location;
-                Common.Settings.Default.WindowSize = RestoreBounds.Size;
+                Settings.Default.WindowLocation = RestoreBounds.Location;
+                Settings.Default.WindowSize = RestoreBounds.Size;
             }
 
-            Common.Settings.Default.Maximized = (WindowState == FormWindowState.Maximized ? true : false);
+            Settings.Default.Maximized = (WindowState == FormWindowState.Maximized ? true : false);
 
-            Common.Settings.Default.Columns = objectListView.ColumnsInDisplayOrder.Select(x => x.AspectName).ToList();
+            Settings.Default.Columns = objectListView.ColumnsInDisplayOrder.Select(x => x.AspectName).ToList();
 
             List<int> columnWidth = new List<int>();
             foreach (ColumnHeader column in objectListView.Columns)
             {
                 columnWidth.Add(column.Width);
             }
-            Common.Settings.Default.ColumnWidth = columnWidth;
+            Settings.Default.ColumnWidth = columnWidth;
 
-            Common.Settings.Default.SortColumn = objectListView.PrimarySortColumn?.AspectName ?? "";
-            Common.Settings.Default.SortOrder = objectListView.PrimarySortOrder == SortOrder.Ascending;
+            Settings.Default.SortColumn = objectListView.PrimarySortColumn?.AspectName ?? "";
+            Settings.Default.SortOrder = objectListView.PrimarySortOrder == SortOrder.Ascending;
 
-            Common.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
-            Location = Common.Settings.Default.WindowLocation;
-            Size = Common.Settings.Default.WindowSize;
+            Location = Settings.Default.WindowLocation;
+            Size = Settings.Default.WindowSize;
 
-            if (Common.Settings.Default.Maximized)
+            if (Settings.Default.Maximized)
             {
                 WindowState = FormWindowState.Maximized;
             }
 
-            if (Common.Settings.Default.Columns.Any())
+            if (Settings.Default.Columns.Any())
             {
                 foreach (var column in objectListView.AllColumns)
                 {
-                    if (!Common.Settings.Default.Columns.Union(new List<string> { "titleID", "titleName", "error" }).ToList().Contains(column.AspectName))
+                    if (!Settings.Default.Columns.Union(new List<string> { "titleID", "titleName", "error" }).ToList().Contains(column.AspectName))
                     {
                         column.IsVisible = false;
                     }
@@ -223,7 +223,7 @@ namespace NX_Game_Info
                 objectListView.RebuildColumns();
             }
 
-            foreach (var column in objectListView.Columns.Cast<ColumnHeader>().Zip(Common.Settings.Default.ColumnWidth, Tuple.Create))
+            foreach (var column in objectListView.Columns.Cast<ColumnHeader>().Zip(Settings.Default.ColumnWidth, Tuple.Create))
             {
                 column.Item1.Width = column.Item2;
             }
@@ -263,14 +263,14 @@ namespace NX_Game_Info
                 }
             };
 
-            if (Common.Settings.Default.SortColumn.Length > 0)
+            if (Settings.Default.SortColumn.Length > 0)
             {
                 foreach (OLVColumn column in objectListView.AllColumns)
                 {
-                    if (column.AspectName == Common.Settings.Default.SortColumn)
+                    if (column.AspectName == Settings.Default.SortColumn)
                         objectListView.PrimarySortColumn = column;
                 }
-                objectListView.PrimarySortOrder = Common.Settings.Default.SortOrder ? SortOrder.Ascending : SortOrder.Descending;
+                objectListView.PrimarySortOrder = Settings.Default.SortOrder ? SortOrder.Ascending : SortOrder.Descending;
             }
 
             int index = 0;
@@ -326,9 +326,9 @@ namespace NX_Game_Info
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Open NX Game Files";
             openFileDialog.Filter = String.Format("NX Game Files (*.xci;*.nsp;{0}*.nro)|*.xci;*.nsp;{0}*.nro|Gamecard Files (*.xci{1})|*.xci{1}|Package Files (*.nsp{2})|*.nsp{2}|Homebrew Files (*.nro)|*.nro|All Files (*.*)|*.*",
-                Common.Settings.Default.NszExtension ? "*.xcz;*.nsz;" : "", Common.Settings.Default.NszExtension ? ";*.xcz" : "", Common.Settings.Default.NszExtension ? ";*.nsz" : "");
+                Settings.Default.NszExtension ? "*.xcz;*.nsz;" : "", Settings.Default.NszExtension ? ";*.xcz" : "", Settings.Default.NszExtension ? ";*.nsz" : "");
             openFileDialog.Multiselect = true;
-            openFileDialog.InitialDirectory = !String.IsNullOrEmpty(Common.Settings.Default.InitialDirectory) && Directory.Exists(Common.Settings.Default.InitialDirectory) ? Common.Settings.Default.InitialDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+            openFileDialog.InitialDirectory = !String.IsNullOrEmpty(Settings.Default.InitialDirectory) && Directory.Exists(Settings.Default.InitialDirectory) ? Settings.Default.InitialDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
 
             Process.log?.WriteLine("\nOpen File");
 
@@ -337,8 +337,8 @@ namespace NX_Game_Info
                 objectListView.Items.Clear();
                 toolStripStatusLabel.Text = "";
 
-                Common.Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog.FileNames.First());
-                Common.Settings.Default.Save();
+                Settings.Default.InitialDirectory = Path.GetDirectoryName(openFileDialog.FileNames.First());
+                Settings.Default.Save();
 
                 progressDialog = (IProgressDialog)new ProgressDialog();
                 progressDialog.StartProgressDialog(Handle, "Opening files");
@@ -378,7 +378,7 @@ namespace NX_Game_Info
             fileToolStripMenuItem.HideDropDown();
 
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.SelectedPath = !String.IsNullOrEmpty(Common.Settings.Default.InitialDirectory) && Directory.Exists(Common.Settings.Default.InitialDirectory) ? Common.Settings.Default.InitialDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+            folderBrowserDialog.SelectedPath = !String.IsNullOrEmpty(Settings.Default.InitialDirectory) && Directory.Exists(Settings.Default.InitialDirectory) ? Settings.Default.InitialDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
 
             Process.log?.WriteLine("\nOpen Directory");
 
@@ -422,8 +422,8 @@ namespace NX_Game_Info
                 objectListView.Items.Clear();
                 toolStripStatusLabel.Text = "";
 
-                Common.Settings.Default.InitialDirectory = folderBrowserDialog.SelectedPath;
-                Common.Settings.Default.Save();
+                Settings.Default.InitialDirectory = folderBrowserDialog.SelectedPath;
+                Settings.Default.Save();
 
                 progressDialog = (IProgressDialog)new ProgressDialog();
                 progressDialog.StartProgressDialog(Handle, String.Format("Opening files from directory {0}", folderBrowserDialog.SelectedPath));
@@ -474,8 +474,8 @@ namespace NX_Game_Info
                     objectListView.Items.Clear();
                     toolStripStatusLabel.Text = "";
 
-                    Common.Settings.Default.InitialDirectory = directorypath;
-                    Common.Settings.Default.Save();
+                    Settings.Default.InitialDirectory = directorypath;
+                    Settings.Default.Save();
 
                     progressDialog = (IProgressDialog)new ProgressDialog();
                     progressDialog.StartProgressDialog(Handle, String.Format("Opening files from directory {0}", directorypath));
@@ -523,7 +523,7 @@ namespace NX_Game_Info
             }
 
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.SelectedPath = !String.IsNullOrEmpty(Common.Settings.Default.SDCardDirectory) && Directory.Exists(Common.Settings.Default.SDCardDirectory) ? Common.Settings.Default.SDCardDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
+            folderBrowserDialog.SelectedPath = !String.IsNullOrEmpty(Settings.Default.SDCardDirectory) && Directory.Exists(Settings.Default.SDCardDirectory) ? Settings.Default.SDCardDirectory : Directory.GetDirectoryRoot(Directory.GetCurrentDirectory());
 
             Process.log?.WriteLine("\nOpen SD Card");
 
@@ -532,8 +532,8 @@ namespace NX_Game_Info
                 objectListView.Items.Clear();
                 toolStripStatusLabel.Text = "";
 
-                Common.Settings.Default.SDCardDirectory = folderBrowserDialog.SelectedPath;
-                Common.Settings.Default.Save();
+                Settings.Default.SDCardDirectory = folderBrowserDialog.SelectedPath;
+                Settings.Default.Save();
 
                 Process.log?.WriteLine("SD card selected");
 
@@ -563,7 +563,7 @@ namespace NX_Game_Info
                         progressDialog = (IProgressDialog)new ProgressDialog();
                         progressDialog.StartProgressDialog(Handle, "Exporting titles");
 
-                        char separator = Common.Settings.Default.CsvSeparator;
+                        char separator = Settings.Default.CsvSeparator;
                         if (separator != '\0')
                         {
                             writer.WriteLine("sep={0}", separator);
@@ -861,10 +861,10 @@ namespace NX_Game_Info
 
         private void debugLogToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Common.Settings.Default.DebugLog = debugLogToolStripMenuItem.Checked;
-            Common.Settings.Default.Save();
+            Settings.Default.DebugLog = debugLogToolStripMenuItem.Checked;
+            Settings.Default.Save();
 
-            if (Common.Settings.Default.DebugLog)
+            if (Settings.Default.DebugLog)
             {
                 try
                 {
@@ -1055,7 +1055,7 @@ namespace NX_Game_Info
                     title = (Title)item.RowObject;
 
                     string filename = Path.GetFullPath(title.filename);
-                    string newname = Path.Combine(Path.GetDirectoryName(filename), Regex.Replace(Common.Settings.Default.RenameFormat
+                    string newname = Path.Combine(Path.GetDirectoryName(filename), Regex.Replace(Settings.Default.RenameFormat
                         .Replace("{n}", title.titleName)
                         .Replace("{i}", title.titleID)
                         .Replace("{j}", title.baseTitleID)
@@ -1410,7 +1410,7 @@ namespace NX_Game_Info
                 {
                     List<string> filenames = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                         .Where(filename => filename.ToLower().EndsWith(".xci") || filename.ToLower().EndsWith(".nsp") || filename.ToLower().EndsWith(".nro") ||
-                        (Common.Settings.Default.NszExtension && (filename.ToLower().EndsWith(".xcz") || filename.ToLower().EndsWith(".nsz")))).ToList();
+                        (Settings.Default.NszExtension && (filename.ToLower().EndsWith(".xcz") || filename.ToLower().EndsWith(".nsz")))).ToList();
                     filenames.Sort();
 
                     Process.log?.WriteLine("{0} files selected", filenames.Count);

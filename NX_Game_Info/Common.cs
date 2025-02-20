@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-#if WINDOWS
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
-#endif
+﻿using System.Configuration;
 #if MACOS
 using System.IO;
 #endif
@@ -13,8 +6,6 @@ using System.Xml.Serialization;
 #if MACOS
 using Foundation;
 #endif
-using LibHac;
-using Newtonsoft.Json;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
@@ -22,13 +13,6 @@ namespace NX_Game_Info
 {
     public static partial class Common
     {
-#if WINDOWS
-        [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
-        public static extern Int32 StrFormatByteSize(
-            long fileSize,
-            [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer,
-            int bufferSize);
-#endif
         public class Aaa { }
 
         public class History : ApplicationSettingsBase

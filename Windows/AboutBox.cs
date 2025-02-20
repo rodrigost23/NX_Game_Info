@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming rule violation: These words must begin with upper case characters
 
-namespace NX_Game_Info
+namespace NX_Game_Info.Windows
 {
     partial class AboutBox : Form
     {

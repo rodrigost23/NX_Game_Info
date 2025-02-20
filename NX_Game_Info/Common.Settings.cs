@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-#if WINDOWS
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
-#endif
+﻿using System.Configuration;
 #if MACOS
 using System.IO;
 #endif
@@ -76,64 +69,6 @@ namespace NX_Game_Info
                 get { return (bool)this["NszExtension"]; }
                 set { this["NszExtension"] = value; }
             }
-
-#if WINDOWS
-            [UserScopedSetting()]
-            [DefaultSettingValue("0, 0")]
-            public Point WindowLocation
-            {
-                get { return (Point)this["WindowLocation"]; }
-                set { this["WindowLocation"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("800, 600")]
-            public Size WindowSize
-            {
-                get { return (Size)this["WindowSize"]; }
-                set { this["WindowSize"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("False")]
-            public bool Maximized
-            {
-                get { return (bool)this["Maximized"]; }
-                set { this["Maximized"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("")]
-            public List<string> Columns
-            {
-                get { return (List<string>)this["Columns"]; }
-                set { this["Columns"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("")]
-            public string SortColumn
-            {
-                get { return (string)this["SortColumn"]; }
-                set { this["SortColumn"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("True")]
-            public bool SortOrder
-            {
-                get { return (bool)this["SortOrder"]; }
-                set { this["SortOrder"] = value; }
-            }
-
-            [UserScopedSetting()]
-            [DefaultSettingValue("")]
-            public List<int> ColumnWidth
-            {
-                get { return (List<int>)this["ColumnWidth"]; }
-                set { this["ColumnWidth"] = value; }
-            }
-#endif
 
             public static Settings Default = (Settings)Synchronized(new Settings());
         }

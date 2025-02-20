@@ -269,9 +269,7 @@ namespace NX_Game_Info
             {
                 get
                 {
-#if WINDOWS
-                    StringBuilder builder = new StringBuilder(20); StrFormatByteSize(filesize, builder, 20); return builder.ToString();
-#elif MACOS
+#if MACOS
                     return NSByteCountFormatter.Format(filesize, NSByteCountFormatterCountStyle.File);
 #else
                     return GetBytesReadable(filesize);
