@@ -17,10 +17,7 @@
     <FileVersion>0.7.2.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\NX_Game_Info\Common.cs" />
-    <Compile Include="..\NX_Game_Info\Process.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\NX_Game_Info\NX_Game_Info.csproj" />
     <ProjectReference Include="..\LibHac\src\LibHac\LibHac.csproj" />
   </ItemGroup>
   <ItemGroup>
