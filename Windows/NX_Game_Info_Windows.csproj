@@ -9,10 +9,10 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG;WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>NX_Game_Info.ico</ApplicationIcon>
@@ -22,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\NX_Game_Info\Common.cs" />
+    <Compile Include="..\NX_Game_Info\Common.Settings.cs" />
+    <Compile Include="..\NX_Game_Info\Common.Title.cs" />
+    <Compile Include="..\NX_Game_Info\Constants.cs" />
     <Compile Include="..\NX_Game_Info\Process.cs" />
   </ItemGroup>
   <ItemGroup>

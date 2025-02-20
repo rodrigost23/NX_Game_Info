@@ -38,20 +38,20 @@ namespace NX_Game_Info
 
         public static Dictionary<string, uint> latestVersions = new Dictionary<string, uint>();
 
-        public static string path_prefix = File.Exists(Common.APPLICATION_DIRECTORY_PATH_PREFIX + Common.PROD_KEYS) ? Common.APPLICATION_DIRECTORY_PATH_PREFIX : Common.USER_PROFILE_PATH_PREFIX;
+        public static string path_prefix = File.Exists(Constants.APPLICATION_DIRECTORY_PATH_PREFIX + Constants.PROD_KEYS) ? Constants.APPLICATION_DIRECTORY_PATH_PREFIX : Constants.USER_PROFILE_PATH_PREFIX;
         public static StreamWriter log;
 
         public static bool initialize(out List<string> messages)
         {
             messages = new List<string>();
 
-            string prod_keys = path_prefix + Common.PROD_KEYS;
-            string title_keys = path_prefix + Common.TITLE_KEYS;
-            string console_keys = path_prefix + Common.CONSOLE_KEYS;
+            string prod_keys = path_prefix + Constants.PROD_KEYS;
+            string title_keys = path_prefix + Constants.TITLE_KEYS;
+            string console_keys = path_prefix + Constants.CONSOLE_KEYS;
 
             if (!File.Exists(prod_keys))
             {
-                messages.Add("File not found. Check if '" + Common.PROD_KEYS + "' exist and try again.");
+                messages.Add("File not found. Check if '" + Constants.PROD_KEYS + "' exist and try again.");
                 return false;
             }
 
@@ -59,7 +59,7 @@ namespace NX_Game_Info
             {
                 try
                 {
-                    log = File.AppendText(path_prefix + Common.LOG_FILE);
+                    log = File.AppendText(path_prefix + Constants.LOG_FILE);
                     log.AutoFlush = true;
                 }
                 catch { }
@@ -110,7 +110,7 @@ namespace NX_Game_Info
                 return false;
             }
 
-            string hac_versionlist = path_prefix + Common.HAC_VERSIONLIST;
+            string hac_versionlist = path_prefix + Constants.HAC_VERSIONLIST;
 
             try
             {
@@ -201,7 +201,7 @@ namespace NX_Game_Info
 
         public static bool updateTitleKeys()
         {
-            string title_keys = path_prefix + Common.TITLE_KEYS;
+            string title_keys = path_prefix + Constants.TITLE_KEYS;
 
             try
             {
@@ -209,7 +209,7 @@ namespace NX_Game_Info
 
                 using (var httpClient = new HttpClient())
                 {
-                    var response = httpClient.GetAsync(Common.TITLE_KEYS_URI).Result;
+                    var response = httpClient.GetAsync(Constants.TITLE_KEYS_URI).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -237,7 +237,7 @@ namespace NX_Game_Info
 
         public static bool updateVersionList()
         {
-            string hac_versionlist = path_prefix + Common.HAC_VERSIONLIST;
+            string hac_versionlist = path_prefix + Constants.HAC_VERSIONLIST;
 
             try
             {
@@ -245,7 +245,7 @@ namespace NX_Game_Info
 
                 using (var httpClient = new HttpClient())
                 {
-                    var response = httpClient.GetAsync(Common.HAC_VERSIONLIST_URI).Result;
+                    var response = httpClient.GetAsync(Constants.HAC_VERSIONLIST_URI).Result;
 
                     if (response.IsSuccessStatusCode)
                     {

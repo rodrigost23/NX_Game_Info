@@ -93,7 +93,7 @@ namespace NX_Game_Info
         {
             InitializeComponent();
 
-            PortableSettingsProvider.SettingsFileName = Common.USER_SETTINGS;
+            PortableSettingsProvider.SettingsFileName = Constants.USER_SETTINGS;
             PortableSettingsProviderBase.SettingsDirectory = Process.path_prefix;
             PortableSettingsProvider.ApplyProvider(Common.Settings.Default, Common.History.Default, Common.RecentDirectories.Default);
 
@@ -388,9 +388,9 @@ namespace NX_Game_Info
                 Common.RecentDirectories.Default.Titles.Remove(findtitle);
                 Common.RecentDirectories.Default.Titles.Insert(0, new ArrayOfTitle { description = folderBrowserDialog.SelectedPath });
 
-                if (Common.RecentDirectories.Default.Titles.Count > Common.HISTORY_SIZE)
+                if (Common.RecentDirectories.Default.Titles.Count > Constants.HISTORY_SIZE)
                 {
-                    Common.RecentDirectories.Default.Titles.RemoveRange(Common.HISTORY_SIZE, Common.RecentDirectories.Default.Titles.Count - Common.HISTORY_SIZE);
+                    Common.RecentDirectories.Default.Titles.RemoveRange(Constants.HISTORY_SIZE, Common.RecentDirectories.Default.Titles.Count - Constants.HISTORY_SIZE);
                 }
                 Common.RecentDirectories.Default.Save();
 
@@ -414,9 +414,9 @@ namespace NX_Game_Info
                     item.Checked = item == menuItem;
                 }
 
-                while (openDirectoryToolStripMenuItem.DropDownItems.Count > Common.HISTORY_SIZE)
+                while (openDirectoryToolStripMenuItem.DropDownItems.Count > Constants.HISTORY_SIZE)
                 {
-                    openDirectoryToolStripMenuItem.DropDownItems.RemoveAt(Common.HISTORY_SIZE);
+                    openDirectoryToolStripMenuItem.DropDownItems.RemoveAt(Constants.HISTORY_SIZE);
                 }
 
                 objectListView.Items.Clear();
@@ -767,7 +767,7 @@ namespace NX_Game_Info
             progressDialog = (IProgressDialog)new ProgressDialog();
             progressDialog.StartProgressDialog(Handle, "Downloading title keys");
 
-            progressDialog.SetLine(2, String.Format("Downloading from {0}", Common.TITLE_KEYS_URI), true, IntPtr.Zero);
+            progressDialog.SetLine(2, String.Format("Downloading from {0}", Constants.TITLE_KEYS_URI), true, IntPtr.Zero);
 
             int count = Process.keyset?.TitleKeys?.Count ?? 0;
 
@@ -794,7 +794,7 @@ namespace NX_Game_Info
             progressDialog = (IProgressDialog)new ProgressDialog();
             progressDialog.StartProgressDialog(Handle, "Downloading version list");
 
-            progressDialog.SetLine(2, String.Format("Downloading from {0}", Common.HAC_VERSIONLIST_URI), true, IntPtr.Zero);
+            progressDialog.SetLine(2, String.Format("Downloading from {0}", Constants.HAC_VERSIONLIST_URI), true, IntPtr.Zero);
 
             if (Process.updateVersionList())
             {
@@ -825,13 +825,13 @@ namespace NX_Game_Info
                         title = titles.ToList(),
                     };
                     Common.History.Default.Titles.Add(history);
-                    if (Common.History.Default.Titles.Count > Common.HISTORY_SIZE)
+                    if (Common.History.Default.Titles.Count > Constants.HISTORY_SIZE)
                     {
-                        Common.History.Default.Titles.RemoveRange(0, Common.History.Default.Titles.Count - Common.HISTORY_SIZE);
+                        Common.History.Default.Titles.RemoveRange(0, Common.History.Default.Titles.Count - Constants.HISTORY_SIZE);
                     }
                     Common.History.Default.Save();
 
-                    while (historyToolStripMenuItem.DropDownItems.Count > Common.HISTORY_SIZE)
+                    while (historyToolStripMenuItem.DropDownItems.Count > Constants.HISTORY_SIZE)
                     {
                         historyToolStripMenuItem.DropDownItems.RemoveAt(0);
                     }
@@ -868,7 +868,7 @@ namespace NX_Game_Info
             {
                 try
                 {
-                    Process.log = File.AppendText(Process.path_prefix + Common.LOG_FILE);
+                    Process.log = File.AppendText(Process.path_prefix + Constants.LOG_FILE);
                     Process.log.AutoFlush = true;
                 }
                 catch { }
@@ -1516,9 +1516,9 @@ namespace NX_Game_Info
                     title = titles.ToList(),
                 };
                 Common.History.Default.Titles.Add(history);
-                if (Common.History.Default.Titles.Count > Common.HISTORY_SIZE)
+                if (Common.History.Default.Titles.Count > Constants.HISTORY_SIZE)
                 {
-                    Common.History.Default.Titles.RemoveRange(0, Common.History.Default.Titles.Count - Common.HISTORY_SIZE);
+                    Common.History.Default.Titles.RemoveRange(0, Common.History.Default.Titles.Count - Constants.HISTORY_SIZE);
                 }
                 Common.History.Default.Save();
 
@@ -1537,7 +1537,7 @@ namespace NX_Game_Info
                 menuItem.Checked = true;
                 historyToolStripMenuItem.DropDownItems.Add(menuItem);
 
-                while (historyToolStripMenuItem.DropDownItems.Count > Common.HISTORY_SIZE)
+                while (historyToolStripMenuItem.DropDownItems.Count > Constants.HISTORY_SIZE)
                 {
                     historyToolStripMenuItem.DropDownItems.RemoveAt(0);
                 }
