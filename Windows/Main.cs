@@ -16,7 +16,7 @@ using KPreisser.UI;
 using LibHac;
 using OfficeOpenXml;
 using FsTitle = LibHac.Title;
-using Title = NX_Game_Info.Common.Title;
+using Title = NX_Game_Info.Title;
 using ArrayOfTitle = NX_Game_Info.Common.ArrayOfTitle;
 using TaskDialogPage = KPreisser.UI.TaskDialogPage;
 using TaskDialog = KPreisser.UI.TaskDialog;
@@ -576,7 +576,7 @@ namespace NX_Game_Info.Windows
                         writer.WriteLine("# publisher {0} {1}", Application.ProductName, Application.ProductVersion);
                         writer.WriteLine("# updated {0}", String.Format("{0:F}", DateTime.Now));
 
-                        writer.WriteLine(String.Join(separator.ToString(), Common.Title.Properties));
+                        writer.WriteLine(String.Join(separator.ToString(), Title.Properties));
 
                         uint index = 0, count = (uint)titles.Count;
 

@@ -10,7 +10,7 @@ using Bluegrams.Application;
 using LibHac;
 using OfficeOpenXml;
 using FsTitle = LibHac.Title;
-using Title = NX_Game_Info.Common.Title;
+using Title = NX_Game_Info.Title;
 using ArrayOfTitle = NX_Game_Info.Common.ArrayOfTitle;
 
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
@@ -348,7 +348,7 @@ namespace NX_Game_Info
                             writer.WriteLine("# publisher {0} {1}", NSBundle.MainBundle.ObjectForInfoDictionary("CFBundleName").ToString(), NSBundle.MainBundle.ObjectForInfoDictionary("CFBundleShortVersionString").ToString());
                             writer.WriteLine("# updated {0}", String.Format("{0:F}", DateTime.Now));
 
-                            writer.WriteLine(String.Join(separator.ToString(), Common.Title.Properties));
+                            writer.WriteLine(String.Join(separator.ToString(), Title.Properties));
 
                             uint index = 0, count = (uint)titles.Count;
 

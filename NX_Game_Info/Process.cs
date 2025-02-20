@@ -18,7 +18,7 @@ using LibHac;
 using LibHac.IO;
 using Newtonsoft.Json;
 using FsTitle = LibHac.Title;
-using Title = NX_Game_Info.Common.Title;
+using Title = NX_Game_Info.Title;
 using ArrayOfTitle = NX_Game_Info.Common.ArrayOfTitle;
 
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
@@ -30,20 +30,20 @@ namespace NX_Game_Info
 {
     public class Process
     {
-        public static Keyset keyset;
-        public static Dictionary<string, uint> versionList = new Dictionary<string, uint>();
+        public static Keyset? keyset;
+        public static Dictionary<string, uint> versionList = [];
 
-        public static Dictionary<string, string> titleNames = new Dictionary<string, string>();
-        public static Dictionary<string, uint> titleVersions = new Dictionary<string, uint>();
+        public static Dictionary<string, string> titleNames = [];
+        public static Dictionary<string, uint> titleVersions = [];
 
-        public static Dictionary<string, uint> latestVersions = new Dictionary<string, uint>();
+        public static Dictionary<string, uint> latestVersions = [];
 
         public static string path_prefix = File.Exists(Constants.APPLICATION_DIRECTORY_PATH_PREFIX + Constants.PROD_KEYS) ? Constants.APPLICATION_DIRECTORY_PATH_PREFIX : Constants.USER_PROFILE_PATH_PREFIX;
-        public static StreamWriter log;
+        public static StreamWriter? log;
 
         public static bool initialize(out List<string> messages)
         {
-            messages = new List<string>();
+            messages = [];
 
             string prod_keys = path_prefix + Constants.PROD_KEYS;
             string title_keys = path_prefix + Constants.TITLE_KEYS;
@@ -79,16 +79,19 @@ namespace NX_Game_Info
 
                 log?.WriteLine("Found {0} title keys", keyset?.TitleKeys?.Count);
 
-                titleNames = keyset.TitleNames.ToDictionary(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper(), p => p.Value);
-                titleVersions = keyset.TitleVersions.ToDictionary(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper(), p => p.Value);
+                titleNames = keyset?.TitleNames?.ToDictionary(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper(), p => p.Value) ?? new Dictionary<string, string>();
+                titleVersions = keyset?.TitleVersions?.ToDictionary(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper(), p => p.Value) ?? new Dictionary<string, uint>();
             }
             catch { }
 
             try
             {
                 if (!(bool)keyset?.HeaderKey?.Any(b => b != 0) ||
-                    !(bool)keyset?.AesKekGenerationSource?.Any(b => b != 0) || !(bool)keyset?.AesKeyGenerationSource?.Any(b => b != 0) || !(bool)keyset?.KeyAreaKeyApplicationSource?.Any(b => b != 0) ||
-                    !((bool)keyset?.MasterKeys?[0]?.Any(b => b != 0) || (bool)keyset?.KeyAreaKeys?[0]?[0]?.Any(b => b != 0)))
+                    !(bool)keyset?.AesKekGenerationSource?.Any(b => b != 0) ||
+                    !(bool)keyset?.AesKeyGenerationSource?.Any(b => b != 0) ||
+                    !(bool)keyset?.KeyAreaKeyApplicationSource?.Any(b => b != 0) ||
+                    !((bool)keyset?.MasterKeys?[0]?.Any(b => b != 0) ||
+                    (bool)keyset?.KeyAreaKeys?[0]?[0]?.Any(b => b != 0)))
                 {
                     log?.WriteLine("Keyfile missing required keys");
                     log?.WriteLine(" - {0} ({1}exists)", "header_key", (bool)keyset?.HeaderKey?.Any(b => b != 0) ? "" : "not ");
@@ -118,7 +121,7 @@ namespace NX_Game_Info
 
                 var versionlist = JsonConvert.DeserializeObject<Common.VersionList>(File.ReadAllText(hac_versionlist));
 
-                foreach (var title in versionlist.titles)
+                foreach (var title in versionlist?.titles ?? [])
                 {
                     string titleID = title.id;
                     if (titleID.EndsWith("800"))
@@ -130,7 +133,7 @@ namespace NX_Game_Info
                     versionList[titleID.ToUpper()] = Math.Max(version, title.version);
                 }
 
-                log?.WriteLine("Found {0} titles, last modified at {1}", versionList.Count, versionlist.last_modified);
+                log?.WriteLine("Found {0} titles, last modified at {1}", versionList.Count, versionlist?.last_modified);
             }
             catch { }
 
@@ -222,8 +225,8 @@ namespace NX_Game_Info
 
                             log?.WriteLine("Found {0} title keys", keyset?.TitleKeys?.Count);
 
-                            titleNames = keyset.TitleNames.GroupBy(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper()).ToDictionary(p => p.Key, p => p.Last().Value);
-                            titleVersions = keyset.TitleVersions.GroupBy(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper()).ToDictionary(p => p.Key, p => p.Last().Value);
+                            titleNames = keyset?.TitleNames.GroupBy(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper()).ToDictionary(p => p.Key, p => p.Last().Value) ?? [];
+                            titleVersions = keyset?.TitleVersions.GroupBy(p => BitConverter.ToString(p.Key.Take(8).ToArray()).Replace("-", "").ToUpper()).ToDictionary(p => p.Key, p => p.Last().Value) ?? [];
 
                             return true;
                         }
@@ -256,7 +259,7 @@ namespace NX_Game_Info
 
                             versionList.Clear();
 
-                            foreach (var title in versionlist.titles)
+                            foreach (var title in versionlist?.titles ?? [])
                             {
                                 string titleID = title.id;
                                 if (titleID.EndsWith("800"))
@@ -268,7 +271,7 @@ namespace NX_Game_Info
                                 versionList[titleID.ToUpper()] = Math.Max(version, title.version);
                             }
 
-                            log?.WriteLine("Found {0} titles, last modified at {1}", versionList.Count, versionlist.last_modified);
+                            log?.WriteLine("Found {0} titles, last modified at {1}", versionList.Count, versionlist?.last_modified);
 
                             File.WriteAllText(hac_versionlist, content);
 
@@ -282,7 +285,7 @@ namespace NX_Game_Info
             return false;
         }
 
-        public static Title processFile(string filename)
+        public static Title? processFile(string filename)
         {
             log?.WriteLine("\nProcessing file {0}", filename);
 
@@ -330,7 +333,7 @@ namespace NX_Game_Info
             using (var filestream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 Xci xci;
-                string biggestNca = null, controlNca = null;
+                string? biggestNca = null, controlNca = null;
 
                 try
                 {
@@ -696,11 +699,11 @@ namespace NX_Game_Info
                 {
                     log?.WriteLine("{0} of {1} NCA processed", fs?.Titles?.Select(title => title.Value.Ncas.Count)?.Sum(), fs?.Ncas?.Count);
 
-                    List<Application> applications = fs?.Applications?.Values?.ToList() ?? new List<Application>();
+                    List<Application> applications = fs?.Applications?.Values?.ToList() ?? [];
 
                     log?.WriteLine("Found {0} applications", applications?.Count);
 
-                    List<FsTitle> fsTitles = new List<FsTitle>();
+                    List<FsTitle> fsTitles = [];
 
                     foreach (Application application in applications)
                     {
@@ -1004,7 +1007,7 @@ namespace NX_Game_Info
 
             if (nca.HasRightsId)
             {
-                if (keyset.TitleNames.TryGetValue(nca.Header.RightsId, out string titleName))
+                if (keyset.TitleNames.TryGetValue(nca.Header.RightsId, out string? titleName))
                 {
                     title.titleName = titleName;
                 }
@@ -1196,8 +1199,9 @@ namespace NX_Game_Info
 
         public static List<Title> processHistory(int index = -1)
         {
-            ArrayOfTitle history = index != -1 ? Common.History.Default.Titles.ElementAtOrDefault(index) : Common.History.Default.Titles.LastOrDefault();
-            List<Title> titles = history?.title?.ToList() ?? new List<Title>();
+            ArrayOfTitle? history = index != -1 ? Common.History.Default.Titles.ElementAtOrDefault(index) : Common.History.Default.Titles.LastOrDefault();
+
+            List<Title> titles = history?.title?.ToList() ?? [];
 
             foreach (var title in titles)
             {

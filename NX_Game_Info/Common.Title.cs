@@ -20,12 +20,10 @@ using Newtonsoft.Json;
 
 namespace NX_Game_Info
 {
-    public static partial class Common
+    [Serializable]
+    public class Title
     {
-        [Serializable]
-        public class Title
-        {
-            public static readonly Dictionary<string, uint> SystemUpdate = new()
+        public static readonly Dictionary<string, uint> SystemUpdate = new()
             {
                 { "4f8133e5b3657334e507c8e704011886.cnmt.nca", 450 },       // 1.0.0
                 { "734d85b19c5f281e100407d84e8cbfb2.cnmt.nca", 65796 },     // 2.0.0
@@ -62,9 +60,9 @@ namespace NX_Game_Info
                 { "7746448930b5db17c75227dd4a9b2f20.cnmt.nca", 673185852 }, // 10.2.0
             };
 
-            public static readonly string[] Properties =
-            [
-                "Title ID",
+        public static readonly string[] Properties =
+        [
+            "Title ID",
                 "Base Title ID",
                 "Title Name",
                 "Display Version",
@@ -87,9 +85,9 @@ namespace NX_Game_Info
                 "Error",
             ];
 
-            public static readonly string[] LanguageCode =
-            [
-                "en-US",
+        public static readonly string[] LanguageCode =
+        [
+            "en-US",
                 "en-GB",
                 "ja",
                 "fr",
@@ -106,239 +104,238 @@ namespace NX_Game_Info
                 "zh-CN",
             ];
 
-            public enum Distribution
-            {
-                Digital,
-                Cartridge,
-                Homebrew,
-                Filesystem,
-                Invalid = -1
-            }
-
-            public enum Structure
-            {
-                CnmtXml,
-                CnmtNca,
-                Cert,
-                Tik,
-                LegalinfoXml,
-                NacpXml,
-                PrograminfoXml,
-                CardspecXml,
-                AuthoringtoolinfoXml,
-                RootPartition,
-                UpdatePartition,
-                NormalPartition,
-                SecurePartition,
-                LogoPartition,
-                Invalid = -1
-            }
-
-            public enum Permission
-            {
-                Safe,
-                Unsafe,
-                Dangerous,
-                Invalid = -1
-            }
-
-            public Title() { }
-
-            [JsonProperty("TitleID")]
-            [XmlElement("TitleID")]
-            public string titleID { get; set; } = "";
-
-            [JsonProperty("BaseTitleID")]
-            [XmlElement("BaseTitleID")]
-            public string baseTitleID { get; set; } = "";
-
-            [JsonProperty("TitleName")]
-            [XmlElement("TitleName")]
-            public string titleName { get; set; } = "";
-
-            [JsonProperty("DisplayVersion")]
-            [XmlElement("DisplayVersion")]
-            public string displayVersion { get; set; } = "";
-
-            [JsonProperty("Version")]
-            [XmlElement("Version")]
-            public uint version { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string versionString => version != unchecked((uint)-1) ? version.ToString() + (version >= 65536 ? " (" + (version / 65536).ToString() + ")" : "") : "";
-
-
-            [JsonProperty("LatestVersion")]
-            [XmlElement("LatestVersion")]
-            public uint latestVersion { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string latestVersionString => latestVersion != unchecked((uint)-1) ? latestVersion.ToString() + (latestVersion >= 65536 ? " (" + (latestVersion / 65536).ToString() + ")" : "") : "";
-
-
-            [JsonProperty("SystemUpdate")]
-            [XmlElement("SystemUpdate")]
-            public uint systemUpdate { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string systemUpdateString => systemUpdate switch
-            {
-                0 => "0",
-                <= 450 => "1.0.0",
-                <= 65796 => "2.0.0",
-                <= 131162 => "2.1.0",
-                <= 196628 => "2.2.0",
-                <= 262164 => "2.3.0",
-                unchecked((uint)-1) => "",
-                _ => (systemUpdate >> 26 & 0x3F) + "." + (systemUpdate >> 20 & 0x3F) + "." + (systemUpdate >> 16 & 0x0F)
-            };
-
-            [JsonProperty("SystemVersion")]
-            [XmlElement("SystemVersion")]
-            public uint systemVersion { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string systemVersionString => systemVersion switch
-            {
-                0 => "0",
-                <= 450 => "1.0.0",
-                <= 65796 => "2.0.0",
-                <= 131162 => "2.1.0",
-                <= 196628 => "2.2.0",
-                <= 262164 => "2.3.0",
-                unchecked((uint)-1) => "",
-                _ => ((systemVersion >> 26) & 0x3F) + "." + ((systemVersion >> 20) & 0x3F) + "." + ((systemVersion >> 16) & 0x0F)
-            };
-
-            [JsonProperty("ApplicationVersion")]
-            [XmlElement("ApplicationVersion")]
-            public uint applicationVersion { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string applicationVersionString => applicationVersion != unchecked((uint)-1) ? applicationVersion.ToString() : "";
-
-
-            [JsonProperty("Masterkey")]
-            [XmlElement("Masterkey")]
-            public uint masterkey { get; set; } = unchecked((uint)-1);
-
-            [JsonIgnore]
-            public string masterkeyString => masterkey switch
-            {
-                0 => masterkey.ToString() + " (1.0.0-2.3.0)",
-                1 => masterkey.ToString() + " (3.0.0)",
-                2 => masterkey.ToString() + " (3.0.1-3.0.2)",
-                3 => masterkey.ToString() + " (4.0.0-4.1.0)",
-                4 => masterkey.ToString() + " (5.0.0-5.1.0)",
-                5 => masterkey.ToString() + " (6.0.0-6.1.0)",
-                6 => masterkey.ToString() + " (6.2.0)",
-                7 => masterkey.ToString() + " (7.0.0-8.0.1)",
-                8 => masterkey.ToString() + " (8.1.0)",
-                9 => masterkey.ToString() + " (9.0.0-9.0.1)",
-                10 => masterkey.ToString() + " (9.1.0-10.2.0)",
-                unchecked((uint)-1) => "",
-                _ => masterkey.ToString(),
-            };
-
-            [JsonProperty("TitleKey")]
-            [XmlElement("TitleKey")]
-            public string titleKey { get; set; } = "";
-
-            [JsonProperty("Publisher")]
-            [XmlElement("Publisher")]
-            public string publisher { get; set; } = "";
-
-            [JsonProperty("Languages")]
-            [XmlElement("Languages")]
-            public HashSet<string> languages { get; set; } = new HashSet<string>();
-
-            [JsonIgnore]
-            public string languagesString =>
-                string.Join(",", languages.Where(x => !string.IsNullOrEmpty(x)));
-
-            [JsonProperty("Filename")]
-            [XmlElement("Filename")]
-            public string filename { get; set; } = "";
-
-            [JsonProperty("Filesize")]
-            [XmlElement("Filesize")]
-            public long filesize { get; set; } = 0;
-
-            [JsonIgnore]
-            public string filesizeString
-            {
-                get
-                {
-#if MACOS
-                    return NSByteCountFormatter.Format(filesize, NSByteCountFormatterCountStyle.File);
-#else
-                    return GetBytesReadable(filesize);
-#endif
-                }
-            }
-
-            [JsonProperty("Type")]
-            [XmlElement("Type")]
-            public TitleType type { get; set; } = TitleType.Application;
-
-            [JsonIgnore]
-            public string typeString => type switch
-            {
-                TitleType.Application => "Base",
-                TitleType.Patch => "Update",
-                TitleType.AddOnContent => "DLC",
-                _ => "",
-            };
-
-            [JsonProperty("Distribution")]
-            [XmlElement("Distribution")]
-            public Distribution distribution { get; set; } = Distribution.Invalid;
-
-            [JsonProperty("Structure")]
-            [XmlElement("Structure")]
-            public HashSet<Structure> structure { get; set; } = new HashSet<Structure>();
-
-            [JsonIgnore]
-            public string structureString => distribution switch
-            {
-                Distribution.Cartridge => structure switch
-                {
-                    var s when new HashSet<Structure>([Structure.UpdatePartition, Structure.SecurePartition]).All(s.Contains) &&
-                               new HashSet<Structure>([Structure.RootPartition, Structure.NormalPartition]).Any(s.Contains) => "Scene",
-                    var s when new HashSet<Structure>([Structure.SecurePartition]).All(s.Contains) => "Converted",
-                    _ => "Not complete"
-                },
-                Distribution.Digital => structure switch
-                {
-                    var s when new HashSet<Structure>([Structure.LegalinfoXml, Structure.NacpXml, Structure.PrograminfoXml, Structure.CardspecXml]).All(s.Contains) => "Scene",
-                    var s when new HashSet<Structure>([Structure.AuthoringtoolinfoXml]).All(s.Contains) => "Homebrew",
-                    var s when new HashSet<Structure>([Structure.Cert, Structure.Tik]).All(s.Contains) => "CDN",
-                    var s when new HashSet<Structure>([Structure.CnmtXml]).All(s.Contains) => "Converted",
-                    _ => "Not complete"
-                },
-                Distribution.Filesystem => "Filesystem",
-                _ => ""
-            };
-
-            [JsonProperty("Signature")]
-            [XmlElement("Signature")]
-            public bool? signature { get; set; } = null;
-
-            [JsonIgnore]
-            public string signatureString => signature == null ? "" : (bool)signature ? "Passed" : "Not Passed";
-
-
-            [JsonProperty("Permission")]
-            [XmlElement("Permission")]
-            public Permission permission { get; set; } = Permission.Invalid;
-
-            [JsonIgnore]
-            public string permissionString => permission == Permission.Invalid ? "" : permission.ToString();
-
-
-            [JsonProperty("Error")]
-            [XmlElement("Error")]
-            public string error { get; set; } = "";
+        public enum Distribution
+        {
+            Digital,
+            Cartridge,
+            Homebrew,
+            Filesystem,
+            Invalid = -1
         }
+
+        public enum Structure
+        {
+            CnmtXml,
+            CnmtNca,
+            Cert,
+            Tik,
+            LegalinfoXml,
+            NacpXml,
+            PrograminfoXml,
+            CardspecXml,
+            AuthoringtoolinfoXml,
+            RootPartition,
+            UpdatePartition,
+            NormalPartition,
+            SecurePartition,
+            LogoPartition,
+            Invalid = -1
+        }
+
+        public enum Permission
+        {
+            Safe,
+            Unsafe,
+            Dangerous,
+            Invalid = -1
+        }
+
+        public Title() { }
+
+        [JsonProperty("TitleID")]
+        [XmlElement("TitleID")]
+        public string titleID { get; set; } = "";
+
+        [JsonProperty("BaseTitleID")]
+        [XmlElement("BaseTitleID")]
+        public string baseTitleID { get; set; } = "";
+
+        [JsonProperty("TitleName")]
+        [XmlElement("TitleName")]
+        public string titleName { get; set; } = "";
+
+        [JsonProperty("DisplayVersion")]
+        [XmlElement("DisplayVersion")]
+        public string displayVersion { get; set; } = "";
+
+        [JsonProperty("Version")]
+        [XmlElement("Version")]
+        public uint version { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string versionString => version != unchecked((uint)-1) ? version.ToString() + (version >= 65536 ? " (" + (version / 65536).ToString() + ")" : "") : "";
+
+
+        [JsonProperty("LatestVersion")]
+        [XmlElement("LatestVersion")]
+        public uint latestVersion { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string latestVersionString => latestVersion != unchecked((uint)-1) ? latestVersion.ToString() + (latestVersion >= 65536 ? " (" + (latestVersion / 65536).ToString() + ")" : "") : "";
+
+
+        [JsonProperty("SystemUpdate")]
+        [XmlElement("SystemUpdate")]
+        public uint systemUpdate { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string systemUpdateString => systemUpdate switch
+        {
+            0 => "0",
+            <= 450 => "1.0.0",
+            <= 65796 => "2.0.0",
+            <= 131162 => "2.1.0",
+            <= 196628 => "2.2.0",
+            <= 262164 => "2.3.0",
+            unchecked((uint)-1) => "",
+            _ => (systemUpdate >> 26 & 0x3F) + "." + (systemUpdate >> 20 & 0x3F) + "." + (systemUpdate >> 16 & 0x0F)
+        };
+
+        [JsonProperty("SystemVersion")]
+        [XmlElement("SystemVersion")]
+        public uint systemVersion { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string systemVersionString => systemVersion switch
+        {
+            0 => "0",
+            <= 450 => "1.0.0",
+            <= 65796 => "2.0.0",
+            <= 131162 => "2.1.0",
+            <= 196628 => "2.2.0",
+            <= 262164 => "2.3.0",
+            unchecked((uint)-1) => "",
+            _ => ((systemVersion >> 26) & 0x3F) + "." + ((systemVersion >> 20) & 0x3F) + "." + ((systemVersion >> 16) & 0x0F)
+        };
+
+        [JsonProperty("ApplicationVersion")]
+        [XmlElement("ApplicationVersion")]
+        public uint applicationVersion { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string applicationVersionString => applicationVersion != unchecked((uint)-1) ? applicationVersion.ToString() : "";
+
+
+        [JsonProperty("Masterkey")]
+        [XmlElement("Masterkey")]
+        public uint masterkey { get; set; } = unchecked((uint)-1);
+
+        [JsonIgnore]
+        public string masterkeyString => masterkey switch
+        {
+            0 => masterkey.ToString() + " (1.0.0-2.3.0)",
+            1 => masterkey.ToString() + " (3.0.0)",
+            2 => masterkey.ToString() + " (3.0.1-3.0.2)",
+            3 => masterkey.ToString() + " (4.0.0-4.1.0)",
+            4 => masterkey.ToString() + " (5.0.0-5.1.0)",
+            5 => masterkey.ToString() + " (6.0.0-6.1.0)",
+            6 => masterkey.ToString() + " (6.2.0)",
+            7 => masterkey.ToString() + " (7.0.0-8.0.1)",
+            8 => masterkey.ToString() + " (8.1.0)",
+            9 => masterkey.ToString() + " (9.0.0-9.0.1)",
+            10 => masterkey.ToString() + " (9.1.0-10.2.0)",
+            unchecked((uint)-1) => "",
+            _ => masterkey.ToString(),
+        };
+
+        [JsonProperty("TitleKey")]
+        [XmlElement("TitleKey")]
+        public string titleKey { get; set; } = "";
+
+        [JsonProperty("Publisher")]
+        [XmlElement("Publisher")]
+        public string publisher { get; set; } = "";
+
+        [JsonProperty("Languages")]
+        [XmlElement("Languages")]
+        public HashSet<string> languages { get; set; } = new HashSet<string>();
+
+        [JsonIgnore]
+        public string languagesString =>
+            string.Join(",", languages.Where(x => !string.IsNullOrEmpty(x)));
+
+        [JsonProperty("Filename")]
+        [XmlElement("Filename")]
+        public string filename { get; set; } = "";
+
+        [JsonProperty("Filesize")]
+        [XmlElement("Filesize")]
+        public long filesize { get; set; } = 0;
+
+        [JsonIgnore]
+        public string filesizeString
+        {
+            get
+            {
+#if MACOS
+                return NSByteCountFormatter.Format(filesize, NSByteCountFormatterCountStyle.File);
+#else
+                return Common.GetBytesReadable(filesize);
+#endif
+            }
+        }
+
+        [JsonProperty("Type")]
+        [XmlElement("Type")]
+        public TitleType type { get; set; } = TitleType.Application;
+
+        [JsonIgnore]
+        public string typeString => type switch
+        {
+            TitleType.Application => "Base",
+            TitleType.Patch => "Update",
+            TitleType.AddOnContent => "DLC",
+            _ => "",
+        };
+
+        [JsonProperty("Distribution")]
+        [XmlElement("Distribution")]
+        public Distribution distribution { get; set; } = Distribution.Invalid;
+
+        [JsonProperty("Structure")]
+        [XmlElement("Structure")]
+        public HashSet<Structure> structure { get; set; } = new HashSet<Structure>();
+
+        [JsonIgnore]
+        public string structureString => distribution switch
+        {
+            Distribution.Cartridge => structure switch
+            {
+                var s when new HashSet<Structure>([Structure.UpdatePartition, Structure.SecurePartition]).All(s.Contains) &&
+                           new HashSet<Structure>([Structure.RootPartition, Structure.NormalPartition]).Any(s.Contains) => "Scene",
+                var s when new HashSet<Structure>([Structure.SecurePartition]).All(s.Contains) => "Converted",
+                _ => "Not complete"
+            },
+            Distribution.Digital => structure switch
+            {
+                var s when new HashSet<Structure>([Structure.LegalinfoXml, Structure.NacpXml, Structure.PrograminfoXml, Structure.CardspecXml]).All(s.Contains) => "Scene",
+                var s when new HashSet<Structure>([Structure.AuthoringtoolinfoXml]).All(s.Contains) => "Homebrew",
+                var s when new HashSet<Structure>([Structure.Cert, Structure.Tik]).All(s.Contains) => "CDN",
+                var s when new HashSet<Structure>([Structure.CnmtXml]).All(s.Contains) => "Converted",
+                _ => "Not complete"
+            },
+            Distribution.Filesystem => "Filesystem",
+            _ => ""
+        };
+
+        [JsonProperty("Signature")]
+        [XmlElement("Signature")]
+        public bool? signature { get; set; } = null;
+
+        [JsonIgnore]
+        public string signatureString => signature == null ? "" : (bool)signature ? "Passed" : "Not Passed";
+
+
+        [JsonProperty("Permission")]
+        [XmlElement("Permission")]
+        public Permission permission { get; set; } = Permission.Invalid;
+
+        [JsonIgnore]
+        public string permissionString => permission == Permission.Invalid ? "" : permission.ToString();
+
+
+        [JsonProperty("Error")]
+        [XmlElement("Error")]
+        public string error { get; set; } = "";
     }
 }

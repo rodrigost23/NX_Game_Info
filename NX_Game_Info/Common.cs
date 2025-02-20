@@ -13,8 +13,6 @@ namespace NX_Game_Info
 {
     public static partial class Common
     {
-        public class Aaa { }
-
         public class History : ApplicationSettingsBase
         {
             [UserScopedSetting()]
@@ -49,21 +47,21 @@ namespace NX_Game_Info
             public ArrayOfTitle() { }
 
             [XmlElement("Title")]
-            public List<Title> title { get; set; }
+            public List<Title>? title { get; set; }
             [XmlAttribute("Description")]
-            public string description { get; set; }
+            public required string description { get; set; }
         }
 
         public class VersionTitle
         {
-            public string id { get; set; }
+            public required string id { get; set; }
             public uint version { get; set; }
             public uint required_version { get; set; }
         }
 
         public class VersionList
         {
-            public List<VersionTitle> titles { get; set; }
+            public required List<VersionTitle> titles { get; set; }
             public uint format_version { get; set; }
             public uint last_modified { get; set; }
         }

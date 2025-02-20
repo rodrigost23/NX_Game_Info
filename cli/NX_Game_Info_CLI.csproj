@@ -4,7 +4,6 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>nxgameinfo_cli</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>NX_Game_Info.ico</ApplicationIcon>

@@ -11,7 +11,6 @@ using LibHac;
 using OfficeOpenXml;
 using Newtonsoft.Json;
 using FsTitle = LibHac.Title;
-using Title = NX_Game_Info.Common.Title;
 using System.CommandLine;
 
 namespace NX_Game_Info
