@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-#if WINDOWS
-using System.Reflection;
-#endif
-using System.Text;
+﻿using System.Text;
 #if MACOS
 using System.Text.RegularExpressions;
 #endif
@@ -144,52 +136,7 @@ namespace NX_Game_Info
 
         public static void migrateSettings()
         {
-            int version = Common.Settings.Default.Version;
-
-            if (version < 00_06_00_00)
-            {
-#if WINDOWS
-                int columnIndex = Common.Settings.Default.Columns.FindIndex(x => x.Equals("firmware"));
-                if (columnIndex != -1)
-                {
-                    Common.Settings.Default.Columns.RemoveAt(columnIndex);
-                    Common.Settings.Default.Columns.InsertRange(columnIndex, new string[] { "systemUpdateString", "systemVersionString", "applicationVersionString" });
-
-                    Common.Settings.Default.ColumnWidth.RemoveAt(columnIndex);
-                    Common.Settings.Default.ColumnWidth.InsertRange(columnIndex, new int[] { 100, 100, 100 });
-                }
-#endif
-            }
-            if (version < 00_07_00_00)
-            {
-#if WINDOWS
-                int columnIndex = Common.Settings.Default.Columns.FindIndex(x => x.Equals("filename") || x.Equals("filesizeString") ||
-                    x.Equals("typeString") || x.Equals("distribution") || x.Equals("structureString") || x.Equals("signatureString") || x.Equals("permissionString") || x.Equals("error"));
-                if (columnIndex == -1)
-                {
-                    columnIndex = Common.Settings.Default.Columns.Count;
-                }
-                Common.Settings.Default.Columns.InsertRange(columnIndex, new string[] { "titleKey", "publisher" });
-                Common.Settings.Default.ColumnWidth.InsertRange(columnIndex, new int[] { 240, 200 });
-#endif
-            }
-            if (version < 00_07_00_01)
-            {
-#if WINDOWS
-                int columnIndex = Common.Settings.Default.Columns.FindIndex(x => x.Equals("filename") || x.Equals("filesizeString") ||
-                    x.Equals("typeString") || x.Equals("distribution") || x.Equals("structureString") || x.Equals("signatureString") || x.Equals("permissionString") || x.Equals("error"));
-                if (columnIndex == -1)
-                {
-                    columnIndex = Common.Settings.Default.Columns.Count;
-                }
-                Common.Settings.Default.Columns.InsertRange(columnIndex, new string[] { "languagesString" });
-                Common.Settings.Default.ColumnWidth.InsertRange(columnIndex, new int[] { 120 });
-#endif
-            }
-
-#if WINDOWS
-            Common.Settings.Default.Version = Assembly.GetExecutingAssembly().GetName().Version.ToInt();
-#elif MACOS
+#if MACOS
             string versionString = NSBundle.MainBundle.ObjectForInfoDictionary("CFBundleShortVersionString").ToString();
             Match match = Regex.Match(versionString, @"\d+(\.\d+)*");
             if (match.Success)

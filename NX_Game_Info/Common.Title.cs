@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-#if WINDOWS
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
-#endif
 #if MACOS
 using System.IO;
 #endif

@@ -16,7 +16,6 @@ using KPreisser.UI;
 using LibHac;
 using OfficeOpenXml;
 using FsTitle = LibHac.Title;
-using Title = NX_Game_Info.Title;
 using ArrayOfTitle = NX_Game_Info.Common.ArrayOfTitle;
 using TaskDialogPage = KPreisser.UI.TaskDialogPage;
 using TaskDialog = KPreisser.UI.TaskDialog;

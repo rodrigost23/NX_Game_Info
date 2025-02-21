@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-#if WINDOWS
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Text;
-#endif
-#if MACOS
+﻿#if MACOS
 using System.IO;
-#endif
-using System.Linq;
-#if MACOS
 using Foundation;
 #endif
 
